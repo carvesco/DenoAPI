@@ -117,11 +117,10 @@ userRouter.delete("/users/:username", (context:RouterContext)=>{
     return;
   };
   Users = [...Users.filter((usr: IUser)=>usr.username !== params.username)];
-  response.status = 201;
+  response.status = 200;
   response.body = {
     sucess:true,
     msg: `Metodo DELETE HTPP que actua sobre el recurso  /users${params.username}`,
-    data:"No hay data"
   }
 });
 
