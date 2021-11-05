@@ -1,0 +1,33 @@
+GET http://localhost:8000/users
+###
+GET http://localhost:8000/users/benitocamela
+###
+
+
+POST http://localhost:8000/users
+Content-Type: application/json
+
+{
+    "username": "benitocamela",
+    "password": "qwerty"
+}
+###
+
+POST http://localhost:8000/users
+Content-Type: application/json
+###
+
+
+PUT http://localhost:8000/users/juan
+Content-Type: application/json
+
+{
+    "username": "juan",
+    "password": "12345"
+}
+###
+
+
+
+Delete http://localhost:8000/users/juan
+###
