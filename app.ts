@@ -5,36 +5,19 @@ import {
   helpers 
 } from "https://deno.land/x/oak@v9.0.1/mod.ts";
 
+import logger from './Middlewares/logger.ts';
+import header from './Middlewares/header.ts';
+import {IUser,Users} from './Models/User.ts'
+
+
 const app = new Application();
 const userRouter = new Router();
 
-//Entidad en memoria
-interface IUser {
-  username: string,
-  password: string
-}
-
-let Users: Array<IUser> = [
-  {username:"juan",password:"qwerty"},
-  {username:"cesar",password:"elbicho"}
-];
-//    Middleware logger
-app.use( async (context, next)=>{
-  const{request,response} = context;
-  await next();
-  const rt = response.headers.get("X-Response-Time");
-  console.log(`${request.method} sobre ${request.url.pathname} en ${rt}`);
-});
 
 
-//    Middleware response time
-app.use( async (context, next)=>{
-  const{request,response} = context;
-  const start = Date.now();
-  await next();
-  const ms = Date.now()-start;
-  response.headers.set("X-Response-Time",`${ms}ms`);
-});
+app.use(logger);
+app.use(header);
+
 
 //--------------------------------------------------------------------------
 //--------------GET---------------------------------------------------------
@@ -117,7 +100,12 @@ userRouter.put("/users/:username", async(context:RouterContext)=>{
   const userBody:IUser = await result.value;
   response.status = 201;
   user ={...user,...userBody};
-  Users = [...Users.filter((usr: IUser)=>usr.username !== username),user];
+  //Users = [...Users.filter((usr: IUser)=>usr.username !== username),user];
+  const filteredUsers: Array<IUser>=Users.filter((usr: IUser)=>usr.username !== username);
+  Users.splice(0,Users.length);
+  Users.push(...filteredUsers)
+  Users.push(user)
+  response.status = 2000;
   response.body = {
     sucess:true,
     msg: `Metodo PUT  HTPP que actua sobre el recurso  /users/${username}`,
@@ -142,7 +130,10 @@ userRouter.delete("/users/:username", (context:RouterContext)=>{
     };
     return;
   };
-  Users = [...Users.filter((usr: IUser)=>usr.username !== params.username)];
+  //Users = [...Users.filter((usr: IUser)=>usr.username !== params.username)];
+  const filteredUsers: Array<IUser>=Users.filter((usr: IUser)=>usr.username !== params.username);
+  Users.splice(0,Users.length);
+  Users.push(...filteredUsers)
   response.status = 200;
   response.body = {
     sucess:true,
