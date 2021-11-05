@@ -18,8 +18,16 @@ let Users: Array<IUser> = [
   {username:"juan",password:"qwerty"},
   {username:"cesar",password:"elbicho"}
 ];
+//    Middleware logger
+app.use( async (context, next)=>{
+  const{request,response} = context;
+  await next();
+  const rt = response.headers.get("X-Response-Time");
+  console.log(`${request.method} sobre ${request.url.pathname} en ${rt}`);
+});
 
-//    Middleware
+
+//    Middleware response time
 app.use( async (context, next)=>{
   const{request,response} = context;
   const start = Date.now();
