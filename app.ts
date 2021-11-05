@@ -8,6 +8,7 @@ import {
 const app = new Application();
 const userRouter = new Router();
 
+//Entidad en memoria
 interface IUser {
   username: string,
   password: string
@@ -18,7 +19,18 @@ let Users: Array<IUser> = [
   {username:"cesar",password:"elbicho"}
 ];
 
+//    Middleware
+app.use( async (context, next)=>{
+  const{request,response} = context;
+  const start = Date.now();
+  await next();
+  const ms = Date.now()-start;
+  response.headers.set("X-Response-Time",`${ms}ms`);
+});
 
+//--------------------------------------------------------------------------
+//--------------GET---------------------------------------------------------
+//--------------------------------------------------------------------------
 userRouter.get("/users",(context:RouterContext)=>{
   const {response, request} = context;
   response.status = 200;
@@ -42,8 +54,9 @@ userRouter.get("/users/:username",(context:RouterContext)=>{
     data: data,
   }
 });
-
-
+//--------------------------------------------------------------------------
+//-----------------------------POST-----------------------------------------
+//--------------------------------------------------------------------------
 userRouter.post("/users", async (context:RouterContext)=>{
   const {response, request} = context;
   if(!request.hasBody){
@@ -67,7 +80,9 @@ userRouter.post("/users", async (context:RouterContext)=>{
   }
 });
 
-
+//--------------------------------------------------------------------------
+//----------------------------------PUT-------------------------------------
+//--------------------------------------------------------------------------
 userRouter.put("/users/:username", async(context:RouterContext)=>{
   const {response, request} = context;
   const {username} = helpers.getQuery(context,{mergeParams:true});
@@ -103,6 +118,9 @@ userRouter.put("/users/:username", async(context:RouterContext)=>{
 });
 
 
+//--------------------------------------------------------------------------
+//-------------------------------DELETE-------------------------------------
+//--------------------------------------------------------------------------
 
 
 userRouter.delete("/users/:username", (context:RouterContext)=>{
