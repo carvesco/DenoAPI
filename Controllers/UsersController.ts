@@ -1,5 +1,5 @@
 import { IUser, Users } from "../Models/User.ts";
-import { helpers, RouterContext } from "https://deno.land/x/oak@v9.0.1/mod.ts";
+import { helpers, RouterContext } from "oak";
 
 export const getUsers = (context: RouterContext) => {
   const { response, request } = context;
@@ -80,7 +80,7 @@ export const putUser = async (context: RouterContext) => {
   Users.splice(0, Users.length);
   Users.push(...filteredUsers);
   Users.push(user);
-  response.status = 2000;
+  response.status = 200;
   response.body = {
     sucess: true,
     msg: `Metodo PUT  HTPP que actua sobre el recurso  /users/${username}`,
